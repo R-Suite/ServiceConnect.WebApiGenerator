@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ServiceConnect" Version="5.0.4-pre" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceConnect.WebApiGenerator.TestMessages\ServiceConnect.WebApiGenerator.TestMessages.csproj" />
+    <ProjectReference Include="..\ServiceConnect.WebApiGenerator\ServiceConnect.WebApiGenerator.csproj" />
+  </ItemGroup>
+
+</Project>
