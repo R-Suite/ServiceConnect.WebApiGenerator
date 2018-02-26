@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Hosting;
+using ServiceConnect.Container.StructureMap;
+using StructureMap;
 
 namespace ServiceConnect.WebApiGenerator.TestConsumer
 {
@@ -9,9 +11,19 @@ namespace ServiceConnect.WebApiGenerator.TestConsumer
         {
             Console.WriteLine("Hello World!");
 
-            Generator.BuildWebHost(args).Run();
+            IContainer myContainer = new StructureMap.Container();
 
-            Console.ReadLine();
+            var bus = Bus.Initialize(config =>
+            {
+                config.SetContainer(myContainer);
+                //config.SetContainerType<StructureMapContainer>();
+                config.ScanForMesssageHandlers = true;
+                config.SetHost("localhost");
+            });
+
+            //bus.RunWebApiHost(new[] { "http://localhost:5050", "http://localhost:5051" });
+            //bus.RunWebApiHost("http://localhost:5050");
+            bus.RunWebApiHost();
         }
     }
 }

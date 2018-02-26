@@ -8,7 +8,7 @@ namespace ServiceConnect.WebApiGenerator.TestConsumer
     {
         public void Execute(MyMessage message)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("MyMessageHandler - Recieved message. message.Name = {0}", message.Name);
         }
 
         public IConsumeContext Context { get; set; }

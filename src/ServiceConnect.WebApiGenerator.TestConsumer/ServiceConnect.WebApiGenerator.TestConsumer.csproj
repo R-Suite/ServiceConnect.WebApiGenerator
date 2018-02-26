@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="ServiceConnect" Version="5.0.4-pre" />
+    <PackageReference Include="ServiceConnect.Container.StructureMap" Version="5.0.0-pre" />
   </ItemGroup>
 
   <ItemGroup>

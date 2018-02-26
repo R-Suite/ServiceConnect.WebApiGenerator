@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Common.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +16,8 @@ namespace ServiceConnect.WebApiGenerator
 {
     public class Startup
     {
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(Startup));
+
         private readonly IHostingEnvironment _hostingEnv;
 
         private IConfiguration Configuration { get; }
@@ -26,6 +29,8 @@ namespace ServiceConnect.WebApiGenerator
         /// <param name="configuration"></param>
         public Startup(IHostingEnvironment env, IConfiguration configuration)
         {
+            Logger.InfoFormat("(ctor) EnvironmentName: {0}", env.EnvironmentName);
+
             _hostingEnv = env;
             Configuration = configuration;
         }
@@ -39,6 +44,7 @@ namespace ServiceConnect.WebApiGenerator
             // Add framework services.
             services
                 .AddMvc()
+                .AddControllersAsServices()
                 .AddJsonOptions(opts =>
                 {
                     opts.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -58,18 +64,18 @@ namespace ServiceConnect.WebApiGenerator
                         Description = "ServiceConnect Endpoint (ASP.NET Core 2.0)",
                         Contact = new Contact
                         {
-                            Name = "Swagger Codegen Contributors",
-                            Url = "https://github.com/swagger-api/swagger-codegen",
-                            Email = "apiteam@swagger.io"
+                            Name = "Jakub Pachansky",
+                            Email = "jpachansky@ruffer.co.uk"
                         },
                         TermsOfService = "http://swagger.io/terms/"
                     });
                     c.CustomSchemaIds(type => type.FriendlyId(true));
                     c.DescribeAllEnumsAsStrings();
-                    c.IncludeXmlComments($"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
+                    c.IncludeXmlComments(
+                        $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
                     // Sets the basePath property in the Swagger document generated
-                    c.DocumentFilter<BasePathFilter>("/v2");
                     c.DocumentFilter<HandlerEndpointsFilter>();
+                    c.DocumentFilter<BasePathFilter>("/api");
 
                     // Include DataAnnotation attributes on Controller Action parameters as Swagger validation rules (e.g required, pattern, ..)
                     // Use [ValidateModelState] on Actions to actually validate it in C# as well!
@@ -92,7 +98,7 @@ namespace ServiceConnect.WebApiGenerator
                 .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                     c.SwaggerEndpoint("/swagger/1.0.0/swagger.json", "Swagger Test Consumer");
+                    c.SwaggerEndpoint("/swagger/1.0.0/swagger.json", "Swagger WebApi Builder");
                 });
 
             if (env.IsDevelopment())
@@ -102,7 +108,7 @@ namespace ServiceConnect.WebApiGenerator
             else
             {
                 //TODO: Enable production exception handling (https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling)
-                // app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/api/Error");
             }
         }
     }
