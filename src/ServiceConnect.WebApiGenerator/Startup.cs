@@ -66,8 +66,7 @@ namespace ServiceConnect.WebApiGenerator
                         {
                             Name = "Jakub Pachansky",
                             Email = "jpachansky@ruffer.co.uk"
-                        },
-                        TermsOfService = "http://swagger.io/terms/"
+                        }
                     });
                     c.CustomSchemaIds(type => type.FriendlyId(true));
                     c.DescribeAllEnumsAsStrings();

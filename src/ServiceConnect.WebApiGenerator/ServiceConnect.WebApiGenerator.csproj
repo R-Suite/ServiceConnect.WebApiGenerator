@@ -9,16 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Common.Logging" Version="3.4.1" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="2.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="Swashbuckle" Version="5.6.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="1.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ServiceConnect.WebApiGenerator.TestMessages\ServiceConnect.WebApiGenerator.TestMessages.csproj" />
+    <PackageReference Include="Common.Logging" version="3.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore" version="2.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.All" version="2.0.5" />
+    <PackageReference Include="Newtonsoft.Json" version="11.0.1" />
+    <PackageReference Include="ServiceConnect.Interfaces" Version="5.0.0-pre" />
+    <PackageReference Include="Swashbuckle" version="5.6.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" version="2.1.0" />
   </ItemGroup>
 
 </Project>
