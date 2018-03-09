@@ -24,7 +24,9 @@ namespace ServiceConnect.WebApiGenerator
         /// <returns></returns>
         [HttpPost]
         [Route("/api/handlers/{handler}")]
-        public virtual IActionResult HandleMessage([FromBody]object message, [FromHeader(Name = "msg-full-type-name")] string fullTypeName, string handler)
+        public virtual IActionResult HandleMessage([FromBody] object message,
+            [FromHeader(Name = "msg-full-type-name")] string fullTypeName, string handler,
+            [FromHeader(Name = "routing-key")] string routingKey = null)
         {
             Logger.InfoFormat("ServiceConnectController handling {0}.", fullTypeName);
 
@@ -42,12 +44,12 @@ namespace ServiceConnect.WebApiGenerator
             // Cast
             MethodInfo cast = GetType().GetMethods().First(m => m.Name == "Cast");
             MethodInfo genericCast = cast.MakeGenericMethod(messageType);
-            var msgObj = genericCast.Invoke(this, new object[] { message });
+            var msgObj = genericCast.Invoke(this, new object[] {message});
 
             // Send
             MethodInfo send = GetType().GetMethods().First(m => m.Name == "Send");
             MethodInfo genericSend = send.MakeGenericMethod(messageType);
-            genericSend.Invoke(this, new object[] { msgObj });
+            genericSend.Invoke(this, new object[] {msgObj, routingKey });
 
             return StatusCode(200);
         }
@@ -69,10 +71,18 @@ namespace ServiceConnect.WebApiGenerator
             return retval;
         }
 
-        public void Send<T>(T msg) where T : Message
+        public void Send<T>(T msg, string routingKey) where T : Message
         {
             IBus bus = Generator.Bus;
-            bus.Send<T>(bus.Configuration.TransportSettings.QueueName, msg);
+
+            if (!string.IsNullOrEmpty(routingKey))
+            {
+                bus.Publish<T>(msg, routingKey);
+            }
+            else
+            {
+                bus.Send<T>(bus.Configuration.TransportSettings.QueueName, msg);
+            }
         }
     }
 }

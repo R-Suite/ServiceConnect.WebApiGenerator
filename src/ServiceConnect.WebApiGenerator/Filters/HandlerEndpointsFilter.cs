@@ -15,6 +15,7 @@ namespace ServiceConnect.WebApiGenerator.Filters
         private PathItem HandlerPathItem(HandlerReference handlerRef)
         {
             var messageType = Type.GetType(handlerRef.MessageType.AssemblyQualifiedName);
+            var routingKeys = handlerRef.RoutingKeys;
 
             if (null == messageType)
             {
@@ -68,6 +69,19 @@ namespace ServiceConnect.WebApiGenerator.Filters
                     }
                 }
             };
+
+            if (null != routingKeys && routingKeys.Any())
+            {
+                var rkStr = String.Join(",", routingKeys.ToArray());
+                x.Post.Parameters.Add(new NonBodyParameter
+                {
+                    Name = "routing-key",
+                    @In = "header",
+                    Required = true,
+                    Default= routingKeys.First(),
+                    Description = $"warning: message will be published to every \"{messageType.Name}\" handler decorated with the routing key supplied. (possible value(s): {rkStr})"
+                });
+            }
 
             x.Post.Responses = new Dictionary<string, Response>();
             x.Post.Responses.Add("200", new Response { Description = "OK", Schema = new Schema { Type = "string" } });
