@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Common.Logging;
+﻿using Common.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -18,8 +16,6 @@ namespace ServiceConnect.WebApiGenerator
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(Startup));
 
-        private readonly IHostingEnvironment _hostingEnv;
-
         private IConfiguration Configuration { get; }
 
         /// <summary>
@@ -31,7 +27,6 @@ namespace ServiceConnect.WebApiGenerator
         {
             Logger.InfoFormat("(ctor) EnvironmentName: {0}", env.EnvironmentName);
 
-            _hostingEnv = env;
             Configuration = configuration;
         }
 
@@ -70,8 +65,6 @@ namespace ServiceConnect.WebApiGenerator
                     });
                     c.CustomSchemaIds(type => type.FriendlyId(true));
                     c.DescribeAllEnumsAsStrings();
-                    c.IncludeXmlComments(
-                        $"{AppContext.BaseDirectory}{Path.DirectorySeparatorChar}{_hostingEnv.ApplicationName}.xml");
                     // Sets the basePath property in the Swagger document generated
                     c.DocumentFilter<HandlerEndpointsFilter>();
                     c.DocumentFilter<BasePathFilter>("/api");

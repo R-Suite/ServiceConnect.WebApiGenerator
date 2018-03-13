@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netcoreapp2.0\ServiceConnect.WebApiGenerator.xml</DocumentationFile>
+    <DocumentationFile></DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +20,11 @@
     <PackageReference Include="ServiceConnect.Interfaces" Version="5.0.0-pre" />
     <PackageReference Include="Swashbuckle" version="5.6.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" version="2.1.0" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ModuleFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)System*.dll;$(TargetDir)Microsoft*.dll" DestinationPath="$(SolutionDir)%(Filename)%(Extension)">
+    </ModuleFiles>
   </ItemGroup>
 
 </Project>
