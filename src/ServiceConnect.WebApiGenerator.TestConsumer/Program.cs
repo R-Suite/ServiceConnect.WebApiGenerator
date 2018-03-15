@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Hosting;
 using ServiceConnect.Container.StructureMap;
 using StructureMap;
 
@@ -16,7 +15,6 @@ namespace ServiceConnect.WebApiGenerator.TestConsumer
             var bus = Bus.Initialize(config =>
             {
                 config.SetContainer(myContainer);
-                //config.SetContainerType<StructureMapContainer>();
                 config.ScanForMesssageHandlers = true;
                 config.SetHost("localhost");
             });

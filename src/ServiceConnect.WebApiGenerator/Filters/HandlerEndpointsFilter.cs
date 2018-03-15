@@ -83,6 +83,17 @@ namespace ServiceConnect.WebApiGenerator.Filters
                 });
             }
 
+            if (Generator.Bus.Configuration.BeforeConsumingFilters.Any(f=>f.Name == "TokenDecryptFilter"))
+            {
+                x.Post.Parameters.Add(new NonBodyParameter
+                {
+                    Name = "token",
+                    @In = "header",
+                    Required = true,
+                    Default = string.Empty
+                });
+            }
+
             x.Post.Responses = new Dictionary<string, Response>();
             x.Post.Responses.Add("200", new Response { Description = "OK", Schema = new Schema { Type = "string" } });
             return x;

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Common.Logging;
@@ -26,7 +27,8 @@ namespace ServiceConnect.WebApiGenerator
         [Route("/api/handlers/{handler}")]
         public virtual IActionResult HandleMessage([FromBody] object message,
             [FromHeader(Name = "msg-full-type-name")] string fullTypeName, string handler,
-            [FromHeader(Name = "routing-key")] string routingKey = null)
+            [FromHeader(Name = "routing-key")] string routingKey = null,
+            [FromHeader(Name = "token")] string token = null)
         {
             Logger.InfoFormat("ServiceConnectController handling {0}.", fullTypeName);
 
@@ -49,7 +51,7 @@ namespace ServiceConnect.WebApiGenerator
             // Send
             MethodInfo send = GetType().GetMethods().First(m => m.Name == "Send");
             MethodInfo genericSend = send.MakeGenericMethod(messageType);
-            genericSend.Invoke(this, new object[] {msgObj, routingKey });
+            genericSend.Invoke(this, new object[] {msgObj, routingKey, token });
 
             return StatusCode(200);
         }
@@ -71,17 +73,24 @@ namespace ServiceConnect.WebApiGenerator
             return retval;
         }
 
-        public void Send<T>(T msg, string routingKey) where T : Message
+        public void Send<T>(T msg, string routingKey, string token) where T : Message
         {
             IBus bus = Generator.Bus;
 
+            Dictionary<string, string> headers = null;
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                headers = new Dictionary<string, string> {{"Token", token}};
+            }
+
             if (!string.IsNullOrEmpty(routingKey))
             {
-                bus.Publish<T>(msg, routingKey);
+                bus.Publish<T>(msg, routingKey, headers);
             }
             else
             {
-                bus.Send<T>(bus.Configuration.TransportSettings.QueueName, msg);
+                bus.Send<T>(bus.Configuration.TransportSettings.QueueName, msg, headers);
             }
         }
     }
